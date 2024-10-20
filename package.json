@@ -1,8 +1,8 @@
 {
   "type": "commonjs",
   "name": "@iacobus/bip39",
-  "version": "1.0.0",
-  "description": "A lightweight modified implementation of BIP39.",
+  "version": "1.1.0",
+  "description": "An extended implementation of BIP39.",
   "main": "index.js",
   "homepage": "https://github.com/jacobhaap/bip39/#readme",
   "license": "MIT",
