@@ -1,49 +1,95 @@
-function toMnemonic(wordlist, entropy) {
-    if (!wordlist) {
-        throw new Error(`Parameter 'wordlist' is required.`);
-    } if (!entropy) {
-        throw new Error(`Parameter 'entropy' is required.`);
-    }
+const { getChecksum, verifyChecksum } = require('./src/checksum');
+const { toMnemonic, validateMnemonic } = require('./src/mnemonic');
+const toEntropy = require('./src/toEntropy');
 
-    const length = entropy.length;
-    if (length < 11 || length > 506) {
-        throw new Error(`Entropy must be at least 11 bits and no longer than 506 bits.`);
-    } if (length % 11 !== 0) {
-        throw new Error(`Entropy must be a multiple of 11.`);
-    }
+function bip39() {
+    throw new Error(`Function 'bip39' requires a method.`);
+};
 
-    const words = [];
-    for (let i = 0; i < entropy.length; i += 11) {
-        const index = parseInt(entropy.slice(i, i + 11), 2);
-        words.push(wordlist[index]);
-    }
-    const mnemonic = words.join(' ');
-    return mnemonic;
-}
-
-function toEntropy(wordlist, mnemonic) {
-    if (!wordlist) {
-        throw new Error(`Parameter 'wordlist' is required.`);
-    } if (!mnemonic) {
-        throw new Error(`Parameter 'mnemonic' is required.`);
-    }
-
-    const words = mnemonic.split(' ');
-    const length = words.length;
-    if (length < 1 || length > 46) {
-        throw new Error(`Mnemonic must be at least 1 word and no longer than 46 words.`);
-    }
-
-    let entropy = '';
-    words.forEach(word => {
-        const index = wordlist.indexOf(word);
-        if (index === -1) {
-            throw new Error(`Word '${word}' not found in wordlist.`);
+bip39.core = {
+    toMnemonic: function(wordlist, ent) {
+        if (!wordlist) {
+            throw new Error(`Parameter 'wordlist' is required.`);
+        } if (!ent) {
+            throw new Error(`Initial Entropy parameter 'ent' is required.`);
+        } if (ent.length < 128 || ent.length > 256) {
+            throw new Error(`Initial Entropy must be at least 128 bits and no longer than 256 bits.`);
+        } if (ent.length % 32 !== 0) {
+            throw new Error(`Initial Entropy must be a multiple of 32.`);
         }
-        entropy += index.toString(2).padStart(11, '0');
-    });
 
-    return entropy;
-}
+        const checksumLength = ent.length / 32;
+        const entropy = getChecksum(ent, checksumLength);
+        const mnemonic = toMnemonic(wordlist, entropy);
+        const valid = validateMnemonic(wordlist, mnemonic, checksumLength);
+        if (valid) {
+            return mnemonic;
+        } else {
+            throw new Error(`Invalid mnemonic returned.`)
+        }
+    },
+    validate: function(wordlist, mnemonic) {
+        if (!wordlist) {
+            throw new Error(`Parameter 'wordlist' is required.`);
+        } if (!mnemonic) {
+            throw new Error(`Parameter 'mnemonic' is required.`);
+        }
 
-module.exports = { toMnemonic, toEntropy };
+        const lengths = [ 12, 15, 18, 21, 24 ];
+        const words = mnemonic.split(' ').length;
+        if (!lengths.includes(words)) {
+            throw new Error(`Invalid mnemonic length.`);
+        }
+
+        function getChecksumLength(mnemonic) {
+            const lengths = { 12: 4, 15: 5, 18: 6, 21: 7, 24: 8 };
+            const words = mnemonic.split(' ').length;
+            if (lengths[words]) return lengths[words];
+            throw new Error(`Invalid mnemonic length.`);
+        }
+        const checksumLength = getChecksumLength(mnemonic);
+        const valid = validateMnemonic(wordlist, mnemonic, checksumLength);
+        return valid;
+    }
+};
+
+bip39.ext = {
+    toMnemonic: toMnemonic,
+    validate: validateMnemonic
+};
+
+bip39.ent = {
+    toEntropy: toEntropy,
+    checksum: getChecksum,
+    verify: verifyChecksum
+};
+
+function loadWordlist(language) {
+    switch (language) {
+        case 'czech':
+            return require('./wordlists/czech').czech;
+        case 'english':
+            return require('./wordlists/english').english;
+        case 'french':
+            return require('./wordlists/french').french;
+        case 'italian':
+            return require('./wordlists/italian').italian;
+        case 'portuguese':
+            return require('./wordlists/portuguese').portuguese;
+        case 'spanish':
+            return require('./wordlists/spanish').spanish;
+        default:
+            throw new Error(`Unknown wordlist language: ${language}`);
+    }
+};
+
+const wordlists = {
+    get czech() { return loadWordlist('czech'); },
+    get english() { return loadWordlist('english'); },
+    get french() { return loadWordlist('french'); },
+    get italian() { return loadWordlist('italian'); },
+    get portuguese() { return loadWordlist('portuguese'); },
+    get spanish() { return loadWordlist('spanish'); }
+};
+
+module.exports = { bip39, wordlists };
