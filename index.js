@@ -1,6 +1,6 @@
 const { getChecksum, verifyChecksum } = require('./src/checksum');
-const { toMnemonic, validateMnemonic } = require('./src/mnemonic');
-const toEntropy = require('./src/toEntropy');
+const { toMnemonic, fromMnemonic, validateMnemonic } = require('./src/mnemonic');
+const { entFromString, entFromBuffer, entFromUint8Array, entFromHex } = require('./src/ent');
 
 function bip39() {
     throw new Error(`Function 'bip39' requires a method.`);
@@ -59,7 +59,11 @@ bip39.ext = {
 };
 
 bip39.ent = {
-    toEntropy: toEntropy,
+    fromMnemonic: fromMnemonic,
+    fromString: entFromString,
+    fromBuffer: entFromBuffer,
+    fromUint8Array: entFromUint8Array,
+    fromHex: entFromHex,
     checksum: getChecksum,
     verify: verifyChecksum
 };
