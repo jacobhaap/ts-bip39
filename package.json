@@ -1,9 +1,18 @@
 {
   "type": "commonjs",
   "name": "@iacobus/bip39",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An extended implementation of BIP39.",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./wordlists/czech": "./wordlists/czech.js",
+    "./wordlists/english": "./wordlists/english.js",
+    "./wordlists/french": "./wordlists/french.js",
+    "./wordlists/italian": "./wordlists/italian.js",
+    "./wordlists/portuguese": "./wordlists/portuguese.js",
+    "./wordlists/spanish": "./wordlists/spanish.js"
+  },
   "homepage": "https://github.com/jacobhaap/bip39/#readme",
   "license": "MIT",
   "repository": {
