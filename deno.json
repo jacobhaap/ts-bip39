@@ -1,0 +1,18 @@
+{
+  "name": "@iacobus/bip39",
+  "version": "2.0.0",
+  "license": "MIT",
+  "exports": "./src/mod.ts",
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.ns", "deno.window", "esnext"]
+  },
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "test": {
+    "include": ["tests/mod.test.ts"]
+  },
+  "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3"
+  }
+}

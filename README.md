@@ -3,15 +3,14 @@
 
 > An extended implementation of BIP39.
 
-This library supports an extended implementation of the [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), *Mnemonic code for generating deterministic keys*. To get started, install the library:
+This library supports an extended implementation of the [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), *Mnemonic code for generating deterministic keys*. **TypeScript**, **ESM**, and **CommonJS** compatible. To get started, install the library:
 ```bash
+# Deno
+deno add jsr:@iacobus/bip39
+
+# Node.js
 npm install @iacobus/bip39
 ```
-Included in this library is a series of wordlists, and the `bip39` function, which supports the following methods:
- - **`bip39.core`**: Supports creation and validation of mnemonic phrases in compliance with BIP39.
- - **`bip39.ext`**: An extended version of BIP39, supporting creation and validation of mnemonic phrases that are non-compliant with BIP39.
- - **`bip39.ent`**: Supports converting mnemonic phrases to entropy, entropy data conversions, adding a checksum to initial entropy, and verifying checksums.
-
 ---
 
 **Diversions from the proposal:** This library diverges from the guidelines BIP39 established in a few ways, primarily in regards to entropy handling and mnemonic length.  While mnemonic phrases in full compliance with the proposal can be generated using `bip39.core`, using `bip39.ext` supports generating phrases that fall outside the scope of the proposal.
@@ -24,25 +23,29 @@ Included in this library is a series of wordlists, and the `bip39` function, whi
 
 As a note, this library only provides wordlists, functions for mnemonic generation and validation, checksum generation and verification, and mnemonic to entropy conversions. Since no internal entropy generator is present, all entropy must be obtained externally. Lastly, this library denotes a difference between initial entropy (`ent`), which is assumed to have no checksum applied, and `entropy`, which is assumed to include a checksum. The initial entropy `ent` should not be confused with the initial entropy length `ENT`.
 
-## Wordlists
-Currently, wordlists from BIP39 that use the Latin alphabet are included: **Czech**, **English**, **French**, **Italian**, **Portuguese**, and **Spanish**. The non-Latin wordlists for Japanese, Korean, Chinese (Simplified), and Chinese (Traditional) are not included. Each wordlist can be imported as `wordlist`, or the name of the wordlist.
-```js
-// Import as "wordlist"
-const { wordlist } = require('@iacobus/bip39/wordlists/english');
-
-// Import as the name of the wordlist
-const { english } = require('@iacobus/bip39/wordlists/english');
-
+# Usage
+TypeScript/ESM Import:
+```ts
+import { bip39 } from "@iacobus/bip39";
 ```
 
-It is also possible to import a bundle of all the wordlists as `wordlists`, where each wordlist can be accessed as a property of the wordlist bundle, such as `wordlists.czech`.
+CommonJS Require:
 ```js
-// Import wordlists bundle
-const { wordlists } = require('@iacobus/bip39');
+const { bip39 } = require("@iacobus/bip39");
+```
 
-// Get the Czech and English wordlists
-const czech = wordlists.czech;
-const english = wordlists.english;
+For demonstration purposes, methods and their parameters with types will be displayed in TypeScript, and the example use of the library will be displayed in ESM.
+
+## Wordlists
+Currently, wordlists from BIP39 that use the Latin alphabet are included: **Czech**, **English**, **French**, **Italian**, **Portuguese**, and **Spanish**. The non-Latin wordlists for Japanese, Korean, Chinese (Simplified), and Chinese (Traditional) are not included. Each wordlist can be imported as a property of `bip39.wordlist`.
+```js
+import { bip39 } from "@iacobus/bip39";
+
+// English wordlist
+const english = bip39.wordlist.english;
+
+// Czech wordlist
+const czech = bip39.wordlist.czech;
 
 ```
 
@@ -51,21 +54,22 @@ Mnemonic phrases can be obtained from entropy based on a provided wordlist, usin
 
 ### bip39.core.toMnemonic
 The `toMnemonic` method of `bip39.core` generates mnemonic phrases in compliance with BIP39.
-```js
-bip39.core.toMnemonic(wordlist, ent);
+```ts
+bip39.core.toMnemonic(wordlist: string[], ent: string): string {};
 ```
-This expects a `wordlist` parameter (e.g.. the BIP39 English wordlist), and an `ent` parameter for initial entropy (entropy without a checksum). The initial entropy must be between 128 and 256 bits in length, and be divisible by 32. Creating and appending a checksum based on the initial entropy is handled internally, along with internal validation before returning the mnemonic.
+This expects a `wordlist` parameter (e.g.. the English wordlist), and an `ent` parameter for initial entropy (entropy without a checksum). The initial entropy must be between 128 and 256 bits in length, and be divisible by 32. Creating and appending a checksum based on the initial entropy is handled internally, along with internal validation before returning the mnemonic.
 
-*Example use, using a wordlist form the "wordlists" bundle:*
+*Example use:*
 ```js
-const { bip39, wordlists } = require('@iacobus/bip39');
+import { bip39 } from "@iacobus/bip39";
 
-const wordlist = wordlists.english;
+const wordlist = bip39.wordlist.english;
 
 const entropy = "01000010011011110110010101101001011011100110011100100000010000010011001100110010001100010010000001001101010000010101100000100001";
 
 const mnemonic = bip39.core.toMnemonic(wordlist, entropy);
 console.log(mnemonic);
+
 
 // Sample Output:
 // draw kite fog system improve calm smoke economy cake head figure drastic
@@ -74,15 +78,16 @@ console.log(mnemonic);
 
 ### bip39.ext.toMnemonic
 The `toMnemonic` method of `bip39.ext` generates mnemonic phrases non-compliant with BIP39.
-```js
-bip39.ext.toMnemonic(wordlist, entropy);
+```ts
+bip39.ext.toMnemonic(wordlist: string[], entropy: string): string {};
 ```
 This expects a `wordlist` parameter, and `entropy` parameter. The entropy must be between 11 and 506 bits in length, and divisible by 11. Since this extension of `toMnemonic` is non-compliant with BIP39, a wider range of mnemonic lengths than ordinarily permitted can be generated. There is no internal handling for a checksum, and there is no internal validation before the mnemonic is returned.
 
 *Example use, with a mnemonic length of 17 (no checksum):*
 ```js
-const { bip39 } = require('@iacobus/bip39');
-const { wordlist } = require('@iacobus/bip39/wordlists/english');
+import { bip39 } from "@iacobus/bip39";
+
+const wordlist = bip39.wordlist.english;
 
 const entropy = "0101100101101111011101010010000001101010011101010111001101110100001000000110110001101111011100110111010000100000011101000110100001100101001000000110011101100001011011010110010100100001000";
 
@@ -99,15 +104,16 @@ Mnemonic phrases can be validated  based on a provided wordlist (and checksum le
 
 ### bip39.core.validate
 The `validate` method of `bip39.core` checks the validity of a mnemonic phrase, based on a provided wordlist, for mnemonic phrases generated in compliance with BIP39.
-```js
-bip39.core.validate(wordlist, mnemonic);
+```ts
+bip39.core.validate(wordlist: string[], mnemonic: string): boolean {};
 ```
 This expects a `wordlist` parameter, and a `mnemonic` parameter that must contain a compliant mnemonic phrase. This will check the validity of the provided mnemonic phrase, and then return a true or false value, where true means the phrase has passed validation, and false means the validation has failed.
 
 *Example use:*
 ```js
-const { bip39 } = require('@iacobus/bip39');
-const { wordlist } = require('@iacobus/bip39/wordlists/english');
+import { bip39 } from "@iacobus/bip39";
+
+const wordlist = bip39.wordlist.english;
 
 const mnemonic = "draw kite fog system improve calm smoke economy cake head figure drastic";
 
@@ -120,15 +126,16 @@ console.log(valid);
 
 ### bip39.ext.validate
 The validate method of bip39.ext checks the validity of a mnemonic phrase, based on a provided wordlist, for mnemonic phrases generated outside of compliance of BIP39.
-```js
-bip39.ext.validate(wordlist, mnemonic, checksumLength);
+```ts
+bip39.ext.validate(wordlist: string[], mnemonic: string, checksumLength: number): boolean {};
 ```
 This expects a `wordlist` parameter, a `mnemonic` parameter that must contain a mnemonic phrase, and a `checksumLength` parameter that is expected to be a number equal to the length (in bits) of the checksum. This will check the validity of the provided mnemonic phrase, and then return a true or false value, where true means the phrase has passed validation, and false means the validation has failed.
 
 *Example use, with a mnemonic length of 14 and a 5 bit checksum:*
 ```js
-const { bip39 } = require('@iacobus/bip39');
-const { wordlist } = require('@iacobus/bip39/wordlists/english');
+import { bip39 } from "@iacobus/bip39";
+
+const wordlist = bip39.wordlist.english;
 
 const mnemonic = "embody clock brand tattoo afford crawl random mistake jaguar across bubble suspect black above";
 
@@ -145,15 +152,16 @@ Methods for converting mnemonics to entropy, entropy data conversions, obtaining
 
 ### Converting a Mnemonic to Entropy
 Entropy (bits) can be obtained from a mnemonic phrase, based on a provided wordlist, using the `fromMnemonic` method of `bip39.ent`.
-```js
-bip39.ent.fromMnemonic(wordlist, mnemonic);
+```ts
+bip39.ent.fromMnemonic(wordlist: string[], mnemonic: string): string {};
 ```
 This expects a `wordlist` parameter, and a `mnemonic` parameter that must contain a mnemonic phrase. This will convert the words of the mnemonic back to the entropy used to generate the phrase, including any checksum if present, returning the entropy (bits) in the output.
 
 *Example use:*
 ```js
-const { bip39 } = require('@iacobus/bip39');
-const { wordlist } = require('@iacobus/bip39/wordlists/english');
+import { bip39 } from "@iacobus/bip39";
+
+const wordlist = bip39.wordlist.english;
 
 const mnemonic = "draw kite fog system improve calm smoke economy cake head figure drastic";
 
@@ -167,25 +175,25 @@ console.log(entropy);
 
 ### Converting Entropy Data Types
 The `ent` parameter which appears multiple times across this library expects initial entropy be provided as binary strings (bits). As entropy sources may provide entropy in various data types, functions are provided to convert from these different data types to the expected binary strings. The binary strings resulting from these conversions may be subject to further processing (e.g.. truncation before use in checksum generation) before use as initial entropy. The supported data types are **String**, **Buffer**, **Uint8Array**, and **Hexadecimal**.
-```js
+```ts
 // String
-bip39.ent.fromString(str);
+bip39.ent.(str: string): string {};
 
 // Buffer
-bip39.ent.fromBuffer(buf);
+bip39.ent.fromBuffer(buf: Buffer): string {};
 
 // Uint8Array
-bip39.ent.fromUint8Array(uint8Array);
+bip39.ent.fromUint8Array(uint8Array: Uint8Array): string {};
 
 // Hexadecimal
-bip39.ent.fromHex(hex);
+bip39.ent.fromHex(hex: string): string {};
 
 ```
 These methods each accept their respective data type as input, converting to and returning a binary string.
 
 *Example use, converting from a Buffer:*
 ```js
-const { bip39 } = require('@iacobus/bip39');
+import { bip39 } from "@iacobus/bip39";
 
 // Obtain a binary string from a Buffer
 const buf = Buffer.from('Greetings Human', 'utf8');
@@ -202,14 +210,14 @@ console.log("Binary String:", ent);
 
 ### Obtaining a Checksum
 A checksum can be obtained and appended to initial entropy using the `checksum` method of `bip39.ent`.
-```js
-bip39.ent.checksum(ent, checksumLength);
+```ts
+bip39.ent.checksum(ent: string, checksumLength: number): string {};
 ```
 This expects an `ent` parameter for the initial entropy in bits, and a `checksumLength` parameter which expects the length of the checksum in bits as a number. A checksum of the specified `checksumLength` will be generated based on the provided initial entropy, and will return the entropy with checksum appended in the output.
 
 *Example use, with a checksum length of 5:*
 ```js
-const { bip39 } = require('@iacobus/bip39');
+import { bip39 } from "@iacobus/bip39";
 
 const ent = "01001000011001010110110001101100011011110010000001000110011001010110110001101100011011110111011100100000010010000111010101101101011000010110111000000";
 const entropy = bip39.ent.checksum(ent, 5);
@@ -222,14 +230,14 @@ console.log(entropy);
 
 ### Verifying a Checksum
 An entropy string containing a checksum can be verified using the `verify` method of `bip39.ent`.
-```js
-bip39.ent.verify(entropy, checksumLength);
+```ts
+bip39.ent.verify(entropy: string, checksumLength: number): boolean {};
 ```
 This expects an `entropy` parameter, which must contain an entropy string containing a checksum, and a `checksumLength` parameter, which expects the length of the checksum in bits as a number. This will attempt to verify the checksum in the given entropy string based on the checksum length, and then return a true or false value, where true means the checksum has passed verification, and false means the verification failed.
 
 *Example use:*
 ```js
-const { bip39 } = require('@iacobus/bip39');
+import { bip39 } from "@iacobus/bip39";
 
 const entropy = "0100100001100101011011000110110001101111001000000100011001100101011011000110110001101111011101110010000001001000011101010110110101100001011011100000000100";
 

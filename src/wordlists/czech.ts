@@ -1,4 +1,4 @@
-abdikace
+export const czech: string[] = `abdikace
 abeceda
 adresa
 agrese
@@ -2045,4 +2045,4 @@ zvesela
 zvon
 zvrat
 zvukovod
-zvyk
+zvyk`.split('\n');

@@ -1,4 +1,4 @@
-abandon
+export const english: string[] =`abandon
 ability
 able
 about
@@ -2045,4 +2045,4 @@ youth
 zebra
 zero
 zone
-zoo
+zoo`.split('\n');

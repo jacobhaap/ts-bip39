@@ -1,4 +1,4 @@
-ábaco
+export const spanish: string[] = `ábaco
 abdomen
 abeja
 abierto
@@ -2045,4 +2045,4 @@ zarza
 zona
 zorro
 zumo
-zurdo
+zurdo`.split('\n');

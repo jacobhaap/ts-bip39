@@ -1,4 +1,4 @@
-abaisser
+export const french: string[] = `abaisser
 abandon
 abdiquer
 abeille
@@ -2045,4 +2045,4 @@ yacht
 zèbre
 zénith
 zeste
-zoologie
+zoologie`.split('\n');

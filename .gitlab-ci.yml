@@ -1,10 +1,31 @@
+stages:
+  - build
+  - publish
+
+build:
+  image: 'denoland/deno:alpine-2.1.6'
+  stage: build
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    TAG_VERSION: ${CI_COMMIT_TAG/v/}
+  script:
+    - deno run -A ./scripts/build_npm.ts $TAG_VERSION
+  artifacts:
+    paths:
+      - npm/
+
 publish:
   image: 'node:20'
+  stage: publish
+  needs:
+    - build
   rules:
     - if: $CI_COMMIT_TAG
   id_tokens:
     SIGSTORE_ID_TOKEN:
       aud: sigstore
   script:
+    - cd npm
     - npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
     - npm publish --provenance --access public
