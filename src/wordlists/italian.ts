@@ -1,4 +1,4 @@
-abaco
+export const italian: string[] =`abaco
 abbaglio
 abbinato
 abete
@@ -2045,4 +2045,4 @@ zotico
 zucchero
 zufolo
 zulu
-zuppa
+zuppa`.split('\n');

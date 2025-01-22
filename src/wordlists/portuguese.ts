@@ -1,4 +1,4 @@
-abacate
+export const portuguese: string[] =`abacate
 abaixo
 abalar
 abater
@@ -2045,4 +2045,4 @@ zebu
 zelador
 zombar
 zoologia
-zumbido
+zumbido`.split('\n');
