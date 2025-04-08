@@ -28,13 +28,13 @@ await build({
     version: Deno.args[1],
     description: "An extended implementation of BIP39.",
     license: "MIT",
-    homepage: "https://github.com/jacobhaap/bip39/#readme",
+    homepage: "https://github.com/jacobhaap/ts-bip39/#readme",
     repository: {
       type: "git",
-      url: "git+https://gitlab.com/jacobhaap/bip39.git",
+      url: "git+https://gitlab.com/jacobhaap/ts-bip39.git",
     },
     bugs: {
-      url: "https://github.com/jacobhaap/bip39/issues",
+      url: "https://github.com/jacobhaap/ts-bip39/issues",
     },
     author: {
         name: "Jacob V. B. Haap",
