@@ -1,3 +1,10 @@
+/**
+ * @fileoverview BIP39 Spanish Wordlist.
+ * Sourced from: https://github.com/bitcoin/bips/blob/master/bip-0039/spanish.txt
+ * @module
+ */
+
+/** Spanish Wordlist. */
 export const spanish: string[] = `ábaco
 abdomen
 abeja

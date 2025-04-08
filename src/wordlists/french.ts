@@ -1,3 +1,10 @@
+/**
+ * @fileoverview BIP39 French Wordlist.
+ * Sourced from: https://github.com/bitcoin/bips/blob/master/bip-0039/french.txt
+ * @module
+ */
+
+/** French Wordlist. */
 export const french: string[] = `abaisser
 abandon
 abdiquer

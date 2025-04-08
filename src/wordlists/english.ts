@@ -1,3 +1,10 @@
+/**
+ * @fileoverview BIP39 English Wordlist.
+ * Sourced from: https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt
+ * @module
+ */
+
+/** English Wordlist. */
 export const english: string[] =`abandon
 ability
 able
