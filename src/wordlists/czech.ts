@@ -1,3 +1,10 @@
+/**
+ * @fileoverview BIP39 Czech Wordlist.
+ * Sourced from: https://github.com/bitcoin/bips/blob/master/bip-0039/czech.txt
+ * @module
+ */
+
+/** Czech Wordlist. */
 export const czech: string[] = `abdikace
 abeceda
 adresa

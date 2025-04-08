@@ -1,18 +1,44 @@
 {
   "name": "@iacobus/bip39",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "license": "MIT",
-  "exports": "./src/mod.ts",
+  "exports": {
+        ".": "./src/mod.ts",
+        "./lite": "./src/lite/mod.ts",
+        "./utils": "./src/utils/mod.ts",
+        "./wordlist/english": "./src/wordlists/english.ts",
+        "./wordlist/chinese_simplified": "./src/wordlists/chinese_simplified.ts",
+        "./wordlist/chinese_traditional": "./src/wordlists/chinese_traditional.ts",
+        "./wordlist/czech": "./src/wordlists/czech.ts",
+        "./wordlist/french": "./src/wordlists/french.ts",
+        "./wordlist/italian": "./src/wordlists/italian.ts",
+        "./wordlist/japanese": "./src/wordlists/japanese.ts",
+        "./wordlist/korean": "./src/wordlists/korean.ts",
+        "./wordlist/portuguese": "./src/wordlists/portuguese.ts",
+        "./wordlist/spanish": "./src/wordlists/spanish.ts"
+    },
   "compilerOptions": {
     "strict": true,
     "lib": ["deno.ns", "deno.window", "esnext"]
   },
-  "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["node_modules", "dist"],
+  "include": [
+    "./src/**/*",
+    "deno.json",
+    "deno.lock",
+    "LICENSE",
+    "README.md"
+  ],
+  "exclude": [
+    "./.github",
+    "./scripts",
+    ".gitlab-ci.yml",
+    ".gitignore"
+  ],
   "test": {
-    "include": ["tests/mod.test.ts"]
-  },
+        "include": ["./tests/**/*"]
+    },
   "imports": {
-    "@deno/dnt": "jsr:@deno/dnt@^0.41.3"
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+    "@noble/hashes": "npm:@noble/hashes@^1.7.1"
   }
 }

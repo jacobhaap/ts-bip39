@@ -1,3 +1,10 @@
+/**
+ * @fileoverview BIP39 Portuguese Wordlist.
+ * Sourced from: https://github.com/bitcoin/bips/blob/master/bip-0039/portuguese.txt
+ * @module
+ */
+
+/** Portuguese Wordlist. */
 export const portuguese: string[] =`abacate
 abaixo
 abalar

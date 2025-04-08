@@ -1,3 +1,10 @@
+/**
+ * @fileoverview BIP39 Italian Wordlist.
+ * Sourced from: https://github.com/bitcoin/bips/blob/master/bip-0039/italian.txt
+ * @module
+ */
+
+/** Italian Wordlist. */
 export const italian: string[] =`abaco
 abbaglio
 abbinato
