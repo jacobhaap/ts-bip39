@@ -21,7 +21,7 @@ import { msToSeed, msToSeedAsync } from "./utils/seed.ts";
  */
 export function verifyMnemonic(wordlist: string[], ms: string): boolean {
     const bitstream = msToBitstream(wordlist, ms); // Get bitstream string from mnemonic sentence
-    return verifyCsum(bitstream); // Verify bitstream with 'verify' function, return result
+    return verifyCsum(bitstream); // Verify bitstream with 'verifyCsum' function, return result
 }
 
 /** Map of valid MS lengths to ENT lengths. */
@@ -68,21 +68,21 @@ export function toMnemonic(wordlist: string[], ent: Uint8Array, ext?: boolean): 
     let initEnt: Uint8Array; // Initialize 'initEnt' let as a Uint8Array
     if (ext) initEnt = padBytes(ent); // Pad 'ent' and use as initial entropy when 'ext' is true
     else initEnt = ent; // Directly use 'ent' as initial entropy when 'ext' is false/undefined
-    const entBits = toBitstream(initEnt); // Convert 'ent' to a bitstream string
-    const entLen = BigInt(entBits.length); // Get the length of 'entBits'
+    const entBits = toBitstream(initEnt); // Convert 'initEnt' to a bitstream string
+    const entLen = entBits.length; // Get the length of 'entBits'
 
     // Throw an error if the entropy is more than 8192 bits
-    if (entLen > 8192n) {
+    if (entLen > 8192) {
         throw new Error(`Initial entropy cannot exceed 8192 bits, got ${entLen} bits.`);
     }
 
     // Throw an error if 'entLen' is not divisible by 32
-    if ((entLen % 32n !== 0n)) {
+    if ((entLen % 32 !== 0)) {
         throw new Error(`Invalid initial entropy length: ${entLen} is not divisible by 32.`);
     }
 
     // Throw an error if the initial entropy length is not 128, 160, 192, 224, or 256
-    if (!ext && ![128n, 160n, 192n, 224n, 256n].includes(entLen)) {
+    if (!ext && ![128, 160, 192, 224, 256].includes(entLen)) {
         throw new Error(`Invalid initial entropy length: got ${entLen}, expected 128, 160, 192, 224, or 256`);
     }
 
@@ -112,7 +112,7 @@ export function fromMnemonic(wordlist: string[], ms: string): Uint8Array {
  * Create a 64 byte seed from a mnemonic sentence + optional passphrase (synchronous).
  * @example
  * const ms: string = "draw kite fog system improve calm smoke economy cake head figure drastic";
- * const seed = createSeed(english, ms); // Uint8Array(64) [174, 41, 10, 203...]
+ * const seed = createSeed(english, ms); // Uint8Array(64) [253, 45, 107, 175...]
  */
 export function createSeed(wordlist: string[], ms: string, passphrase?: string): Uint8Array {
     const valid = verifyMnemonic(wordlist, ms); // Verify that the provided mnemonic sentence is valid
@@ -124,7 +124,7 @@ export function createSeed(wordlist: string[], ms: string, passphrase?: string):
  * Create a 64 byte seed from a mnemonic sentence + optional passphrase (asynchronous).
  * @example
  * const ms: string = "draw kite fog system improve calm smoke economy cake head figure drastic";
- * const seed = await createSeedAsync(english, ms); // Uint8Array(64) [174, 41, 10, 203...]
+ * const seed = await createSeedAsync(english, ms); // Uint8Array(64) [253, 45, 107, 175...]
  */
 export async function createSeedAsync(wordlist: string[], ms: string, passphrase?: string): Promise<Uint8Array> {
     const valid = verifyMnemonic(wordlist, ms); // Verify that the provided mnemonic sentence is valid

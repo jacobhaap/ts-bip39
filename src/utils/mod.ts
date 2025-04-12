@@ -9,9 +9,6 @@
 /** Re-export of 'toBitstream' and 'fromBitstream' functions. */
 export { toBitstream, fromBitstream } from "./bitstream.ts";
 
-/** Re-export of 'toHex' and 'fromHex' functions. */
-export { toHex, fromHex } from "./hex.ts";
-
 /** Re-export of 'calcCsum' and 'verifyCsum' functions. */
 export { calcCsum, verifyCsum } from "./checksum.ts";
 

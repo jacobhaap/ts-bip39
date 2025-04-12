@@ -14,15 +14,15 @@
  * const padded = padBytes(ent); // Uint8Array(12) [68, 105, 110, 111, 115, 97, 117, 114, 115, 0, 0, 0]
  */
 export function padBytes(ent: Uint8Array): Uint8Array {
-    const entLen = BigInt(ent.length) * 8n; // Get byte entropy length in bits
-    let padLen = ((entLen + 31n) / 32n) * 32n; // Round up to next multiple of 32
+    const entLen = ent.length * 8; // Get byte entropy length in bits
+    let padLen = (((entLen + 31) / 32) | 0) * 32; // Round up to next multiple of 32
 
     // Increment until (ENT + CS) is divisible by 11
-    while ((padLen + padLen / 32n) % 11n !== 0n) {
-        padLen += 32n;
+    while ((padLen + (padLen / 32 | 0)) % 11 !== 0) {
+        padLen += 32;
     }
 
-    const byteLen = Number(padLen / 8n); // Convert final padding length from bits to bytes
+    const byteLen = padLen / 8; // Convert final padding length from bits to bytes
     const padding = new Uint8Array(byteLen); // Create Uint8Array at padded size
     padding.set(ent); // Insert 'ent' at the start of the padded Uint8Array
     return padding; // Return the padded Uint8Array
@@ -35,10 +35,10 @@ export function padBytes(ent: Uint8Array): Uint8Array {
  * const padded = padBitstream(ent); // 01000100011010010110111001101111011100110110000101110101011100100111001100000
  */
 export function padBitstream(ent: string): string {
-    const entLen = BigInt(ent.length); // Get bitstream entropy length
-    const rem = entLen % 11n; // Remainder to reach next multiple of 11
-    const padLen = (11n - rem) % 11n; // Calculate padding length
-    return ent + '0'.repeat(Number(padLen)); // Apply padding and return padded bitstream
+    const entLen = ent.length; // Get bitstream entropy length
+    const rem = entLen % 11; // Remainder to reach next multiple of 11
+    const padLen = (11 - rem) % 11; // Calculate padding length
+    return ent + '0'.repeat(padLen); // Apply padding and return padded bitstream
 }
 
 /**
@@ -50,11 +50,11 @@ export function padBitstream(ent: string): string {
  * const ms = bitstreamToMs(english, bits); // draw kite fog system
  */
 export function bitstreamToMs(wordlist: string[], ent: string, ext?: boolean): string {
-    const entLen = BigInt(ent.length); // Get current entropy length
+    const entLen = ent.length; // Get current entropy length
     let bitstream: string; // Initialize 'bitstream' let as a string
 
     // Check if 'ent' is divisible by 11
-    if (entLen % 11n == 0n) {
+    if (entLen % 11 == 0) {
         bitstream = ent; // Directly use 'ent' as bitstream when divisible by 11
     } else {
         if (ext) {
@@ -70,8 +70,8 @@ export function bitstreamToMs(wordlist: string[], ent: string, ext?: boolean): s
     // Use 11 bit segments from 'ent' bitstream string to encode a number from 0-2047
     // Use number to select a word from 'wordlist' at that index
     const words: string[] = []; // Initialize 'words' as an empty array
-    for (let i = 0n; i < entLen; i += 11n) {
-        const indexBits = bitstream.slice(Number(i), Number(i + 11n));
+    for (let i = 0; i < entLen; i += 11) {
+        const indexBits = bitstream.slice(i, i + 11);
         const index = parseInt(indexBits, 2);
         words.push(wordlist[index]);
     }
