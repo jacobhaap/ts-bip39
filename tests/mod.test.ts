@@ -4,8 +4,8 @@
  * @license MIT
  */
 
+import { bytesToHex, hexToBytes } from "npm:@noble/hashes@1.7.1/utils";
 import { vectors } from "./vectors.ts";
-import { fromHex, toHex } from "../src/utils/hex.ts";
 import { verifyMnemonic, generateMnemonic, toMnemonic, fromMnemonic, createSeed, createSeedAsync } from "../src/mod.ts";
 
 // Import all wordlists
@@ -34,15 +34,11 @@ const wordlists: Record<string, string[]> = {
     spanish
 }
 
-/**
- * Test for 'verifyMnemonic' function.
- * 
- * Iterates over all mnemonic sentences from the test vectors, for each using the corresponding wordlist
- * to complete the verification. The boolean verification result of each iteration is assigned
- * to the 'valid' const.
- * 
- * Console.assert checks that 'valid' is true.
- */
+// Test for 'verifyMnemonic' function.
+// Iterates over all mnemonic sentences from the test vectors, for each using the corresponding wordlist
+// to complete the verification. The boolean verification result of each iteration is assigned
+// to the 'valid' const.
+// console.assert checks that 'valid' is true
 Deno.test(`Function 'verifyMnemonic' verifies valid mnemonic sentences`, () => {
     for (const [lang, tests] of Object.entries(vectors)) { // Iterate over each language and its test vectors
         const wordlist = wordlists[lang]; // Select the wordlist for the current language
@@ -53,13 +49,9 @@ Deno.test(`Function 'verifyMnemonic' verifies valid mnemonic sentences`, () => {
     }
 });
 
-/**
- * Test for 'generateMnemonic' function.
- * 
- * Using the English wordlist, iterates over valid mnemonic sentence lengths to generate random mnemonic sentences.
- * 
- * Console.assert checks that 'ms' is a type of string.
- */
+// Test for 'generateMnemonic' function
+// Using the English wordlist, iterates over valid mnemonic sentence lengths to generate random mnemonic sentences.
+// console.assert checks that 'ms' is a type of string.
 Deno.test(`Function 'generateMnemonic' generates a random mnemonic sentence`, () => {
     const lengths = [ 12, 15, 18, 21, 24 ]; // Define valid mnemonic sentence lengths
     for (const msLen of lengths) { // Iterate over valid mnemonic sentence lengths
@@ -68,78 +60,62 @@ Deno.test(`Function 'generateMnemonic' generates a random mnemonic sentence`, ()
     }
 });
 
-/**
- * Test for 'toMnemonic' function.
- * 
- * Iterates over all hexadecimal entropy and mnemonic sentences from the test vectors, for each using the
- * corresponding wordlist to generate a mnemonic sentence for the given hexadecimal entropy.
- * 
- * Console.assert checks that the newly generated mnemonic sentence matches the vector mnemonic sentence.
- */
+// Test for 'toMnemonic' function.
+// Iterates over all hexadecimal entropy and mnemonic sentences from the test vectors, for each using the
+// corresponding wordlist to generate a mnemonic sentence for the given hexadecimal entropy.
+// console.assert checks that the newly generated mnemonic sentence matches the vector mnemonic sentence.
 Deno.test(`Function 'toMnemonic' generates mnemonic sentences`, () => {
     for (const [lang, tests] of Object.entries(vectors)) { // Iterate over each language and its test vectors
         const wordlist = wordlists[lang]; // Select the wordlist for the current language
         for (const [hex, vectorMs] of tests) { // Use the entropy 'hex' and mnemonic sentence 'vectorMs' from each test vector
-            const ent = fromHex(hex); // Convert the entropy to a Uint8Array 'ent'
+            const ent = hexToBytes(hex); // Convert the entropy to a Uint8Array 'ent'
             const ms = toMnemonic(wordlist, ent); // Generate a mnemonic sentence from 'ent' using the current language wordlist
             console.assert(ms === vectorMs, `Mismatch in ${lang}: expected "${vectorMs}", got "${ms}"`);
         }
     }
 });
 
-/**
- * Test for 'fromMnemonic' function.
- * 
- * Iterates over all hexadecimal entropy and mnemonic sentences from the test vectors, for each using the
- * corresponding wordlist to convert the mnemonic sentence back to entropy, then converting the reobtained
- * entropy from a Uint8Array to a hexadecimal string.
- * 
- * Console.assert checks that the reobtained entropy matches the vector hexadecimal entropy.
- */
+// Test for 'fromMnemonic' function.
+// Iterates over all hexadecimal entropy and mnemonic sentences from the test vectors, for each using the
+// corresponding wordlist to convert the mnemonic sentence back to entropy, then converting the reobtained
+// entropy from a Uint8Array to a hexadecimal string.
+// console.assert checks that the reobtained entropy matches the vector hexadecimal entropy.
 Deno.test(`Function 'fromMnemonic' converts mnemonic sentences to entropy`, () => {
     for (const [lang, tests] of Object.entries(vectors)) { // Iterate over each language and its test vectors
         const wordlist = wordlists[lang]; // Select the wordlist for the current language
         for (const [vectorHex, ms] of tests) { // Use entropy 'vectorHex' and mnemonic sentence 'ms' from each test vector
             const ent = fromMnemonic(wordlist, ms); // Convert 'ms' to entropy 'ent'
-            const hex = toHex(ent); // Convert 'ent' Uint8Array to hex string
+            const hex = bytesToHex(ent); // Convert 'ent' Uint8Array to hex string
             console.assert(hex === vectorHex, `Mismatch in ${lang}: expected "${vectorHex}", got "${hex}"`);
         }
     }
 });
 
-/**
- * Test for 'createSeed' function.
- * 
- * Iterates over all mnemonic sentences and seeds from the test vectors, for each using the corresponding wordlist
- * to create a 64 byte seed from the mnemonic sentence, using a passphrase of "TREZOR".
- * 
- * Console.assert checks that the created seed matches the vector seed.
- */
+// Test for 'createSeed' function.
+// Iterates over all mnemonic sentences and seeds from the test vectors, for each using the corresponding wordlist
+// to create a 64 byte seed from the mnemonic sentence, using a passphrase of "TREZOR".
+// console.assert checks that the created seed matches the vector seed.
 Deno.test(`Function 'createSeed' creates seeds from mnemonic sentences`, () => {
     for (const [lang, tests] of Object.entries(vectors)) { // Iterate over each language and its test vectors
         const wordlist = wordlists[lang]; // Select the wordlist for the current language
         for (const [, ms, vectorSeed] of tests) { // Use mnemonic sentence 'ms' and seed 'vectorSeed' from each test vector
             const seed = createSeed(wordlist, ms, "TREZOR"); // Create a seed from 'ms' with a passphrase of "TREZOR"
-            const hexSeed = toHex(seed); // Convert the seed to a hexadecimal string
+            const hexSeed = bytesToHex(seed); // Convert the seed to a hexadecimal string
             console.assert(hexSeed === vectorSeed, `Mismatch in ${lang}: expected "${vectorSeed}", got "${hexSeed}"`);
         }
     }
 });
 
-/**
- * Test for 'createSeedAsync' function.
- * 
- * Iterates over all mnemonic sentences and seeds from the test vectors, for each using the corresponding wordlist
- * to create a 64 byte seed from the mnemonic sentence, using a passphrase of "TREZOR".
- * 
- * Console.assert checks that the created seed matches the vector seed.
- */
+// Test for 'createSeedAsync' function.
+// Iterates over all mnemonic sentences and seeds from the test vectors, for each using the corresponding wordlist
+// to create a 64 byte seed from the mnemonic sentence, using a passphrase of "TREZOR".
+// console.assert checks that the created seed matches the vector seed.
 Deno.test(`Function 'createSeedAsync' creates seeds from mnemonic sentences`, async () => {
     for (const [lang, tests] of Object.entries(vectors)) { // Iterate over each language and its test vectors
         const wordlist = wordlists[lang]; // Select the wordlist for the current language
         for (const [, ms, vectorSeed] of tests) { // Use mnemonic sentence 'ms' and seed 'vectorSeed' from each test vector
             const seed = await createSeedAsync(wordlist, ms, "TREZOR"); // Create a seed from 'ms' with a passphrase of "TREZOR"
-            const hexSeed = toHex(seed); // Convert the seed to a hexadecimal string
+            const hexSeed = bytesToHex(seed); // Convert the seed to a hexadecimal string
             console.assert(hexSeed === vectorSeed, `Mismatch in ${lang}: expected "${vectorSeed}", got "${hexSeed}"`);
         }
     }

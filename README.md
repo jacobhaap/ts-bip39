@@ -1,4 +1,4 @@
-# TypeScript BIP39 - Iacobus
+# TypeScript | BIP39 - Iacobus
 ![NPM Version](https://img.shields.io/npm/v/%40iacobus%2Fbip39) ![GitLab License](https://img.shields.io/gitlab/license/61864089) ![NPM Type Definitions](https://img.shields.io/npm/types/%40iacobus%2Fbip39) ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/%40iacobus%2Fbip39)
 
 > An extended implementation of BIP39.
@@ -157,12 +157,13 @@ const seed = createSeed(english, ms);
 
 /*
 Uint8Array(64) [
-  174,  41,  10, 203,  16,   0,  68,  97, 211, 227, 192,
-  124,  78,  83,  74, 102,  25, 230, 133,  36, 244,   1,
-  189, 188, 170, 143,  13, 108,   2,  80, 150,  69, 203,
-   34,  33, 170, 242,  56,  87, 140,  89, 194,  24, 224,
-  144, 102,  43, 163,  38, 216,  24,  40,  57, 162,   4,
-  153,  64,  76, 106, 132,  49, 164,  48, 237
+  253,  45, 107, 175, 229, 231, 200, 244, 219, 156,
+  214, 195,  80, 123, 225, 239,  74, 191, 246, 248,
+  124, 112, 215,  56, 230, 179, 228, 122, 213, 131,
+  223, 214, 162, 143,  65, 209,  58,  65, 155, 186,
+  174,  37,  33,  27,  13, 218,  11, 124, 237, 231,
+  165, 224, 183, 218,  60,  70, 238, 138,  62, 205,
+   18, 148,  30, 121
 ]
 */
 ```
@@ -227,7 +228,7 @@ CommonJS require:
 ```js
 const utils = require("@iacobus/bip39/utils");
 ```
-BIP39 utility functions are available under the **@iacobus/bip39/utils** entry point. This includes functionality for data conversion, checksum calculation and verification, padding, mnemonic sentence conversion, and the creation of seeds from mnemonic sentences.
+BIP39 utility functions are available under the **@iacobus/bip39/utils** entry point. This includes functionality for bitstream conversion, checksum calculation & verification, entropy padding, mnemonic sentence conversion, and the creation of seeds from mnemonic sentences.
 
 ## Bitstream String Conversion
 Two functions are included for the conversion between **Uint8Arrays** and **Bitstream Strings**. The `toBitstream` function accepts a *Uint8Array* and returns a bitstream *string*, and the `fromBitstream` function accepts a bitstream *string* and returns a *Uint8Array*.
@@ -246,25 +247,6 @@ import { fromBitstream } from "@iacobus/bip39/utils";
 
 const bits: string = "00001001000010000000011100000110";
 const bytes = fromBitstream(bits); // Uint8Array(4) [ 9, 8, 7, 6 ]
-```
-
-## Hexadecimal String Conversion
-Two functions are included for the conversion between **Uint8Arrays** and **Hexadecimal Strings**. The `toHex` function accepts a *Uint8Array* and returns a hex-encoded *string*, and the `fromHex` function accepts a hex-encoded *string* and returns a *Uint8Array*.
-
-*Convert from a Uint8Array to a hex string:*
-```ts
-import { toHex } from "@iacobus/bip39/utils";
-
-const bytes: Uint8Array = Uint8Array.from([11, 19, 13, 17]);
-const hex = toHex(bytes); // 0b130d11
-```
-
-*Convert from a hex string to a Uint8Array:*
-```ts
-import { fromHex } from "@iacobus/bip39/utils";
-
-const hex: string = "0b130d11";
-const bytes = fromHex(hex); // Uint8Array(4) [ 11, 19, 13, 17 ]
 ```
 
 ## Checksum Calculation & Verification
@@ -334,7 +316,7 @@ A 64 byte seed can be created from a mnemonic sentence and optional passphrase u
 import { msToSeed } from "@iacobus/bip39/utils";
 
 const ms: string = "draw kite fog system improve calm smoke economy cake head figure drastic";
-const seed = msToSeed(ms); // Uint8Array(64) [174, 41, 10, 203...]
+const seed = msToSeed(ms); // Uint8Array(64) [253, 45, 107, 175...]
 ```
 
 *Create a seed (asynchronous):*
@@ -342,5 +324,5 @@ const seed = msToSeed(ms); // Uint8Array(64) [174, 41, 10, 203...]
 import { msToSeedAsync } from "@iacobus/bip39/utils";
 
 const ms: string = "draw kite fog system improve calm smoke economy cake head figure drastic";
-const seed = await msToSeedAsync(ms); // Uint8Array(64) [174, 41, 10, 203...]
+const seed = await msToSeedAsync(ms); // Uint8Array(64) [253, 45, 107, 175...]
 ```
